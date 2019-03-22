@@ -6,7 +6,9 @@ import (
     core "k8s.io/api/core/v1"
 )
 
-type MemValidator struct {}
+type MemValidator struct {
+    Guaranteed bool
+}
 
 
 func (v MemValidator) Validate(dep apps.Deployment) (bool, error) {
@@ -24,7 +26,7 @@ func (v MemValidator) Validate(dep apps.Deployment) (bool, error) {
             return false, fmt.Errorf("%s: memory limit not set", c.Name)
         }
 
-        if getMem(req) != getMem(lim) {
+        if v.Guaranteed && getMem(req) != getMem(lim) {
             return false, fmt.Errorf("%s: memory request and limit must be equal", c.Name)
         }
     }

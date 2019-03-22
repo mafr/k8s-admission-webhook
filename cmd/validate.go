@@ -4,7 +4,6 @@ import (
     "encoding/json"
     "io"
     apps "k8s.io/api/apps/v1"
-    res "k8s.io/apimachinery/pkg/api/resource"
     "k8s.io/apimachinery/pkg/util/yaml"
     "os"
     "mafr.de/admission-policy/validators"
@@ -33,11 +32,9 @@ func main() {
         panic(err)
     }
 
-    maxCpu := res.MustParse("1000m")
-
     vals := []validators.DeploymentValidator{
-        validators.CpuValidator{Max: maxCpu.MilliValue()},
-        validators.MemValidator{},
+        validators.CpuValidator{Max: "2000m"},
+        validators.MemValidator{Guaranteed: true},
     }
 
     resp := validators.Validate(dep, vals)
