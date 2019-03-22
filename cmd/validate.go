@@ -35,6 +35,7 @@ func main() {
     vals := []validators.DeploymentValidator{
         validators.CpuValidator{Max: "2000m"},
         validators.MemValidator{Guaranteed: true},
+        validators.ReplicasValidator{Max: 3},
     }
 
     resp := validators.Validate(dep, vals)
