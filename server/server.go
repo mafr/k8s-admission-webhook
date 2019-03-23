@@ -3,6 +3,7 @@ package server
 import (
     "bytes"
     "encoding/json"
+    "io"
     "io/ioutil"
     "log"
     "net/http"
@@ -10,6 +11,7 @@ import (
     "k8s.io/apimachinery/pkg/runtime/serializer"
     "k8s.io/apimachinery/pkg/runtime"
     adm "k8s.io/api/admission/v1beta1"
+    "mafr.de/admission-policy/validators"
 )
 
 
@@ -48,7 +50,6 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     }
 
     review := adm.AdmissionReview{}
-
     _, _, err = s.Decoder.Decode(data, nil, &review)
     if err != nil {
         log.Printf("failed to decode admission request: %v", err)
@@ -56,10 +57,18 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     }
 
     var buf bytes.Buffer
-
-    enc := json.NewEncoder(&buf)
-    enc.SetIndent("", "  ")
-    enc.Encode(&review)
-
+    printJSON(&buf, &review)
     log.Printf("input: %s", buf.String())
+
+    // TODO: do something with the review
+
+    review.Response = validators.NewAdmissionResponse(false, "not with me")
+
+    printJSON(w, review)
+}
+
+func printJSON(w io.Writer, data interface{}) {
+    enc := json.NewEncoder(w)
+    enc.SetIndent("", "  ")
+    enc.Encode(&data)
 }
