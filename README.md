@@ -11,22 +11,22 @@ Deploying the webhook is quite a bit of work because Kubernetes will only
 accept the webhook if it uses TLS with a certificate signed by the
 api-server's own CA. Follow this process:
 
-  # Create a key and a certificate signing request (CSR)
-  # Submit the CSR to Kubernetes
-  # Have Kubernetes approve the CSR
-  # Retrieve the signed certificate from Kubernetes
+  1. Create a key and a certificate signing request (CSR)
+  2. Submit the CSR to Kubernetes
+  3. Have Kubernetes approve the CSR
+  4. Retrieve the signed certificate from Kubernetes
 
 Make sure to safeguard the certificate and key, they are highly security
 critical. Next, set up the namespace:
 
-  # Create a dedicated namespace for the webhook
-  # Deploy a Secret into the namespace, containing both key and certificate
+  1. Create a dedicated namespace for the webhook
+  2. Deploy a Secret into the namespace, containing both key and certificate
 
 After the infrastructure setup, we deploy the webhook:
 
-  # Create a Deployment, with Pods mounting the Secret created before
-  # Create a Service for the Admission Controller to call
-  # Register the webhook with Kubernetes' Admission Controller
+  1. Create a Deployment, with Pods mounting the Secret created before
+  2. Create a Service for the Admission Controller to call
+  3. Register the webhook with Kubernetes' Admission Controller
 
 
 ## References
