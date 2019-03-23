@@ -11,7 +11,7 @@ import (
     "k8s.io/apimachinery/pkg/runtime/serializer"
     "k8s.io/apimachinery/pkg/runtime"
     adm "k8s.io/api/admission/v1beta1"
-    "mafr.de/admission-policy/validators"
+    "github.com/mafr/kubernetes-admission-webhook/validators"
 )
 
 

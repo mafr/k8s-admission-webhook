@@ -10,7 +10,7 @@ import (
     "k8s.io/apimachinery/pkg/runtime"
     "k8s.io/apimachinery/pkg/util/yaml"
     "os"
-    "mafr.de/admission-policy/validators"
+    "github.com/mafr/kubernetes-admission-webhook/validators"
 )
 
 

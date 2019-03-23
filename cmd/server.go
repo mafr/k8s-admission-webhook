@@ -3,7 +3,7 @@ package main
 import (
     "flag"
     "log"
-    "mafr.de/admission-policy/server"
+    "github.com/mafr/kubernetes-admission-webhook/server"
 )
 
 
