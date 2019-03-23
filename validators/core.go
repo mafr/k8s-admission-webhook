@@ -11,7 +11,7 @@ type DeploymentValidator interface {
 }
 
 
-func Validate(dep apps.Deployment, vals []DeploymentValidator) adm.AdmissionResponse {
+func Validate(dep apps.Deployment, vals []DeploymentValidator) *adm.AdmissionResponse {
     val := ComposedValidator{Validators: vals}
     allowed := true
     msg := "success"
@@ -21,12 +21,7 @@ func Validate(dep apps.Deployment, vals []DeploymentValidator) adm.AdmissionResp
         msg = err.Error()
     }
 
-    return adm.AdmissionResponse{
-        Allowed: allowed,
-        Result: &meta.Status{
-            Message: msg,
-        },
-    }
+    return NewAdmissionResponse(allowed, msg)
 }
 
 
@@ -44,4 +39,14 @@ func (v ComposedValidator) Validate(dep apps.Deployment) (bool, error) {
     }
 
     return true, nil
+}
+
+
+func NewAdmissionResponse(allowed bool, msg string) *adm.AdmissionResponse {
+    return &adm.AdmissionResponse{
+        Allowed: allowed,
+        Result: &meta.Status{
+            Message: msg,
+        },
+    }
 }
