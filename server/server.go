@@ -16,12 +16,14 @@ import (
 
 
 type Server struct {
-    Decoder runtime.Decoder
+    decoder runtime.Decoder
+    deploymentValidators []validators.DeploymentValidator
 }
 
-func NewServer(listenAddress string) *http.Server {
+func NewServer(listenAddress string, vals []validators.DeploymentValidator) *http.Server {
     server := &Server{
-        Decoder: createDecoder(),
+        decoder: createDecoder(),
+        deploymentValidators: vals,
     }
 
     mux := http.NewServeMux()
@@ -47,7 +49,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     }
 
     review := adm.AdmissionReview{}
-    _, _, err = s.Decoder.Decode(data, nil, &review)
+    _, _, err = s.decoder.Decode(data, nil, &review)
     if err != nil {
         log.Printf("failed to decode admission request: %v", err)
         return
@@ -57,9 +59,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     printJSON(&buf, &review)
     log.Printf("input: %s", buf.String())
 
-    // TODO: do something with the review
-
-    review.Response = validators.NewAdmissionResponse(false, "not with me")
+    review.Response = s.Review(review.Request)
 
     printJSON(w, review)
 }

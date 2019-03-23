@@ -4,6 +4,7 @@ import (
     "flag"
     "log"
     "github.com/mafr/kubernetes-admission-webhook/server"
+    "github.com/mafr/kubernetes-admission-webhook/validators"
 )
 
 
@@ -20,7 +21,13 @@ func main() {
         log.Printf("running in plain HTTP mode")
     }
 
-    httpServer := server.NewServer(*listenAddress)
+    vals := []validators.DeploymentValidator{
+        validators.CpuValidator{Max: "2000m"},
+        validators.MemValidator{Guaranteed: true},
+        validators.ReplicasValidator{Max: 3},
+    }
+
+    httpServer := server.NewServer(*listenAddress, vals)
 
     if *plainHttp {
         // This is for testing only, Kubernetes won't accept plain HTTP webhooks.
