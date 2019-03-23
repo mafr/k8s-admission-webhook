@@ -20,11 +20,8 @@ type Server struct {
 }
 
 func NewServer(listenAddress string) *http.Server {
-    codecs := serializer.NewCodecFactory(runtime.NewScheme())
-    dec := codecs.UniversalDeserializer()
-
     server := &Server{
-        Decoder: dec,
+        Decoder: createDecoder(),
     }
 
     mux := http.NewServeMux()
@@ -71,4 +68,9 @@ func printJSON(w io.Writer, data interface{}) {
     enc := json.NewEncoder(w)
     enc.SetIndent("", "  ")
     enc.Encode(&data)
+}
+
+func createDecoder() runtime.Decoder {
+    f := serializer.NewCodecFactory(runtime.NewScheme())
+    return f.UniversalDeserializer()
 }
