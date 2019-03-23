@@ -3,8 +3,8 @@ package main
 import (
     "flag"
     "log"
-    "github.com/mafr/kubernetes-admission-webhook/server"
-    "github.com/mafr/kubernetes-admission-webhook/validators"
+    "github.com/mafr/kubernetes-admission-webhook/pkg/server"
+    "github.com/mafr/kubernetes-admission-webhook/pkg/validators"
 )
 
 
