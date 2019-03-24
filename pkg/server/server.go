@@ -12,6 +12,7 @@ import (
     "k8s.io/apimachinery/pkg/runtime"
     adm "k8s.io/api/admission/v1beta1"
     "github.com/mafr/k8s-admission-webhook/pkg/validator"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 
@@ -28,6 +29,7 @@ func NewServer(listenAddress string, validator validator.ValidatorConfig) *http.
 
     mux := http.NewServeMux()
     mux.HandleFunc("/validate", server.HandleValidate)
+    mux.Handle("/metrics", promhttp.Handler())
 
     httpServer := &http.Server{
         Addr:           listenAddress,
@@ -60,6 +62,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     log.Printf("input: %s", buf.String())
 
     review.Response = s.validator.Validate(review.Request)
+    monitorResponse(review.Response)
 
     printJSON(w, review)
 }
