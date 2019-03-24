@@ -4,7 +4,7 @@ import (
     "flag"
     "log"
     "github.com/mafr/k8s-admission-webhook/pkg/server"
-    "github.com/mafr/k8s-admission-webhook/pkg/validators"
+    "github.com/mafr/k8s-admission-webhook/pkg/validator"
 )
 
 
@@ -21,13 +21,12 @@ func main() {
         log.Printf("running in plain HTTP mode")
     }
 
-    vals := []validators.DeploymentValidator{
-        validators.CpuValidator{Max: "2000m"},
-        validators.MemValidator{Guaranteed: true},
-        validators.ReplicasValidator{Max: 3},
-    }
+    val := validator.ValidatorConfig{}
+    val.Add(validator.CpuValidator{Max: "1000m"})
+    val.Add(validator.MemValidator{Guaranteed: true})
+    val.Add(validator.ReplicasValidator{Max: 3})
 
-    httpServer := server.NewServer(*listenAddress, vals)
+    httpServer := server.NewServer(*listenAddress, val)
 
     if *plainHttp {
         // This is for testing only, Kubernetes won't accept plain HTTP webhooks.

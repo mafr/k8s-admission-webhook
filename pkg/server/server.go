@@ -11,19 +11,19 @@ import (
     "k8s.io/apimachinery/pkg/runtime/serializer"
     "k8s.io/apimachinery/pkg/runtime"
     adm "k8s.io/api/admission/v1beta1"
-    "github.com/mafr/k8s-admission-webhook/pkg/validators"
+    "github.com/mafr/k8s-admission-webhook/pkg/validator"
 )
 
 
 type Server struct {
     decoder runtime.Decoder
-    deploymentValidators []validators.DeploymentValidator
+    validator validator.ValidatorConfig
 }
 
-func NewServer(listenAddress string, vals []validators.DeploymentValidator) *http.Server {
+func NewServer(listenAddress string, validator validator.ValidatorConfig) *http.Server {
     server := &Server{
         decoder: createDecoder(),
-        deploymentValidators: vals,
+        validator: validator,
     }
 
     mux := http.NewServeMux()
@@ -59,7 +59,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     printJSON(&buf, &review)
     log.Printf("input: %s", buf.String())
 
-    review.Response = s.Review(review.Request)
+    review.Response = s.validator.Validate(review.Request)
 
     printJSON(w, review)
 }
