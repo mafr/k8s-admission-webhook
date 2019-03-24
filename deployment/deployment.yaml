@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admission-webhook
+  namespace: kube-admission
+  labels:
+    app.kubernetes.io/name: admission-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: admission-webhook
+  template:
+    metadata:
+      name: admission-webhook
+      labels:
+        app.kubernetes.io/name: admission-webhook
+    spec:
+      containers:
+        - name: webhook
+          image: admission-webhook:latest
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: 50Mi
+              cpu: 300m
+            requests:
+              memory: 50Mi
+              cpu: 300m
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: kube-admission
