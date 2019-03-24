@@ -2,7 +2,7 @@ package main
 
 import (
     "flag"
-    "log"
+    log "github.com/sirupsen/logrus"
     "github.com/mafr/k8s-admission-webhook/pkg/server"
     "github.com/mafr/k8s-admission-webhook/pkg/validator"
 )
@@ -16,9 +16,9 @@ func main() {
 
     flag.Parse()
 
-    log.Printf("listening on %s", *listenAddress)
+    log.Infof("listening on %s", *listenAddress)
     if *plainHttp {
-        log.Printf("running in plain HTTP mode")
+        log.Warn("running in plain HTTP mode (will NOT work in Kubernetes!)")
     }
 
     val := validator.ValidatorConfig{}

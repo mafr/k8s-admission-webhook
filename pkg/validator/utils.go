@@ -2,7 +2,7 @@ package validator
 
 import (
     "encoding/json"
-    "log"
+    log "github.com/sirupsen/logrus"
     adm "k8s.io/api/admission/v1beta1"
     apps "k8s.io/api/apps/v1"
 )
@@ -16,7 +16,7 @@ func GetDeployment(req *adm.AdmissionRequest) (*apps.Deployment, bool) {
     // TODO: req.Object.Raw is the object *before* default values have been applied.
     var deployment apps.Deployment
     if err := json.Unmarshal(req.Object.Raw, &deployment); err != nil {
-        log.Printf("failed to unmarshal deployment")
+        log.WithError(err).Error("failed to unmarshal deployment")
         return nil, false
     }
 
