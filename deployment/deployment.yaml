@@ -20,7 +20,7 @@ spec:
       containers:
         - name: webhook
           image: admission-webhook:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: 50Mi

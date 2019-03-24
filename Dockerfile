@@ -7,7 +7,7 @@ WORKDIR /webhook-server
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/webhook-server cmd/server.go
+    go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/webhook-server cmd/server/main.go
 
 
 FROM scratch AS base
