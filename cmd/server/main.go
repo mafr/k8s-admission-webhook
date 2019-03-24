@@ -13,8 +13,11 @@ func main() {
     certFile := flag.String("c", "/etc/webhook/certs/cert.pem", "server certificate in PEM format")
     keyFile := flag.String("k", "/etc/webhook/certs/key.pem", "server private key in PEM format")
     plainHttp := flag.Bool("p", false, "serve on plain HTTP for testing")
+    logLevel := flag.String("L", "info", "lowest level to write to the log")
 
     flag.Parse()
+
+    server.MustInitLogger(*logLevel)
 
     log.Infof("listening on %s", *listenAddress)
     if *plainHttp {

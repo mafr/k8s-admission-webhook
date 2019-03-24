@@ -2,8 +2,6 @@ package server
 
 import (
     "bytes"
-    "encoding/json"
-    "io"
     "io/ioutil"
     log "github.com/sirupsen/logrus"
     "net/http"
@@ -70,18 +68,12 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     var buf bytes.Buffer
     printJSON(&buf, &review)
 
-    //log.Debug("input: %s", buf.String())
+    log.Debugf("input: %s", buf.String())
 
     review.Response = s.validator.Validate(review.Request)
     monitorResponse(review.Response)
 
     printJSON(w, review)
-}
-
-func printJSON(w io.Writer, data interface{}) {
-    enc := json.NewEncoder(w)
-    enc.SetIndent("", "  ")
-    enc.Encode(&data)
 }
 
 func createDecoder() runtime.Decoder {
