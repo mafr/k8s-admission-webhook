@@ -55,6 +55,32 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    var buf bytes.Buffer
+    printJSON(&buf, &review)
+    log.Debugf("input: %s", buf.String())
+
+    if isResponsible(review) {
+        review.Response = s.validator.Validate(review.Request)
+    } else {
+        review.Response = validator.NewResponse(true, "out of scope")
+    }
+
+    logReview(review)
+    monitorResponse(review.Response)
+    printJSON(w, review)
+}
+
+// TODO: implement inclusion/exclusion mechanism to define the scope
+func isResponsible(review adm.AdmissionReview) bool {
+    return review.Request.Namespace != "kube-system"
+}
+
+func createDecoder() runtime.Decoder {
+    f := serializer.NewCodecFactory(runtime.NewScheme())
+    return f.UniversalDeserializer()
+}
+
+func logReview(review adm.AdmissionReview) {
     log.WithFields(log.Fields{
         "uid": review.Request.UID,
         "kind": review.Request.Kind.Kind,
@@ -63,20 +89,8 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
         "resource": review.Request.Resource.Resource,
         "name": review.Request.Name,
         "namespace": review.Request.Namespace,
-    }).Info("received admission request")
+        "allowed": review.Response.Allowed,
+        "message": review.Response.Result.Message,
+    }).Info("processed admission request")
 
-    var buf bytes.Buffer
-    printJSON(&buf, &review)
-
-    log.Debugf("input: %s", buf.String())
-
-    review.Response = s.validator.Validate(review.Request)
-    monitorResponse(review.Response)
-
-    printJSON(w, review)
-}
-
-func createDecoder() runtime.Decoder {
-    f := serializer.NewCodecFactory(runtime.NewScheme())
-    return f.UniversalDeserializer()
 }

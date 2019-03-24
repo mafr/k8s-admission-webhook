@@ -1,18 +1,19 @@
 {
   "kind": "AdmissionReview",
   "request": {
-    "uid": "abc",
+    "uid": "db59d036-4e72-11e9-835a-080027b9d86a",
     "kind": {
-      "group": "",
-      "version": "",
+      "group": "apps",
+      "version": "v1",
       "kind": "Deployment"
     },
     "resource": {
-      "group": "",
-      "version": "",
-      "resource": ""
+      "group": "apps",
+      "version": "v1",
+      "resource": "deployments"
     },
-    "operation": "",
+    "namespace": "my-namespace",
+    "operation": "CREATE",
     "userInfo": {},
     "object": {
       "kind": "Deployment",

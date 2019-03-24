@@ -15,4 +15,4 @@ COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/bin/webhook-server /bin/webhook-server
 USER app
-ENTRYPOINT ["/bin/webhook-server"]
+ENTRYPOINT ["/bin/webhook-server", "-L", "debug"]
