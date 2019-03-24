@@ -14,7 +14,7 @@ func (s *Server) Review(req *adm.AdmissionRequest) *adm.AdmissionResponse {
         var deployment apps.Deployment
 		if err := json.Unmarshal(req.Object.Raw, &deployment); err != nil {
             log.Printf("failed to unmarshal deployment")
-            return validators.NewAdmissionResponse(false, err.Error())
+            return validators.NewResponse(false, err.Error())
 		}
 
         return validators.Validate(deployment, s.deploymentValidators)
@@ -22,5 +22,5 @@ func (s *Server) Review(req *adm.AdmissionRequest) *adm.AdmissionResponse {
         log.Printf("unknown resource type: %v", req.Kind.Kind)
     }
 
-    return validators.NewAdmissionResponse(true, "success")
+    return validators.NewResponse(true, "success")
 }

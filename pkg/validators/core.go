@@ -21,7 +21,7 @@ func Validate(dep apps.Deployment, vals []DeploymentValidator) *adm.AdmissionRes
         msg = err.Error()
     }
 
-    return NewAdmissionResponse(allowed, msg)
+    return NewResponse(allowed, msg)
 }
 
 
@@ -41,8 +41,7 @@ func (v ComposedValidator) Validate(dep apps.Deployment) (bool, error) {
     return true, nil
 }
 
-
-func NewAdmissionResponse(allowed bool, msg string) *adm.AdmissionResponse {
+func NewResponse(allowed bool, msg string) *adm.AdmissionResponse {
     return &adm.AdmissionResponse{
         Allowed: allowed,
         Result: &meta.Status{
