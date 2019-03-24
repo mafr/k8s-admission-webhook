@@ -4,7 +4,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: admission-webhook
 webhooks:
-  - name: kubernetes-admission-webhook.mafr.github.com
+  - name: k8s-admission-webhook.mafr.github.com
     clientConfig:
       service:
         name: admission-webhook

@@ -1,4 +1,4 @@
-module github.com/mafr/kubernetes-admission-webhook
+module github.com/mafr/k8s-admission-webhook
 
 go 1.12
 

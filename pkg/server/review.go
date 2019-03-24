@@ -2,7 +2,7 @@ package server
 
 import (
     "encoding/json"
-    "github.com/mafr/kubernetes-admission-webhook/pkg/validators"
+    "github.com/mafr/k8s-admission-webhook/pkg/validators"
     "log"
     adm "k8s.io/api/admission/v1beta1"
     apps "k8s.io/api/apps/v1"
