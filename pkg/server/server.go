@@ -45,6 +45,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     data, err := ioutil.ReadAll(r.Body)
     if err != nil {
         log.WithError(err).Error("failed to read request body")
+        http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
 
@@ -52,6 +53,7 @@ func (s *Server) HandleValidate(w http.ResponseWriter, r *http.Request) {
     _, _, err = s.decoder.Decode(data, nil, &review)
     if err != nil {
         log.WithError(err).Error("failed to decode admission request")
+        http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
@@ -92,5 +94,4 @@ func logReview(review adm.AdmissionReview) {
         "allowed": review.Response.Allowed,
         "message": review.Response.Result.Message,
     }).Info("processed admission request")
-
 }
