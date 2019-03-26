@@ -53,9 +53,9 @@ func main() {
     printJSON(os.Stdout, rev)
 
     val := validator.ValidatorConfig{}
-    val.Add(validator.CpuValidator{Max: "2000m"})
-    val.Add(validator.MemValidator{Guaranteed: true})
-    val.Add(validator.ReplicasValidator{Max: 3})
+    val.Add(validator.NewCpuValidator())
+    val.Add(validator.NewMemValidator())
+    val.Add(validator.NewReplicasValidator())
 
     resp := val.Validate(rev.Request)
 

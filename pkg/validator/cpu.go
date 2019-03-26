@@ -5,6 +5,7 @@ import (
     adm "k8s.io/api/admission/v1beta1"
     core "k8s.io/api/core/v1"
     res "k8s.io/apimachinery/pkg/api/resource"
+    "github.com/kelseyhightower/envconfig"
 )
 
 
@@ -12,8 +13,17 @@ type CpuValidator struct {
     Max string
 }
 
+func NewCpuValidator() CpuValidator {
+    v := CpuValidator{}
+    envconfig.MustProcess("cpu", &v)
+    return v
+}
 
 func (v CpuValidator) Validate(req *adm.AdmissionRequest) *adm.AdmissionResponse {
+    if v.Max == "" {
+        return NewResponse(true, "ok")
+    }
+
     dep, ok := GetDeployment(req)
     if !ok {
         return NewResponse(true, "ok")

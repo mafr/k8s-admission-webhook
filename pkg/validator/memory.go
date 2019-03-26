@@ -4,12 +4,20 @@ import (
     "fmt"
     adm "k8s.io/api/admission/v1beta1"
     core "k8s.io/api/core/v1"
+    "github.com/kelseyhightower/envconfig"
 )
 
 type MemValidator struct {
+    RequestRequired bool `split_words:"true"`
+    LimitRequired bool `split_words:"true"`
     Guaranteed bool
 }
 
+func NewMemValidator() MemValidator {
+    v := MemValidator{}
+    envconfig.MustProcess("mem", &v)
+    return v
+}
 
 func (v MemValidator) Validate(req *adm.AdmissionRequest) *adm.AdmissionResponse {
     dep, ok := GetDeployment(req)
@@ -23,11 +31,11 @@ func (v MemValidator) Validate(req *adm.AdmissionRequest) *adm.AdmissionResponse
         req := c.Resources.Requests
         lim := c.Resources.Limits
 
-        if getMem(req) <= 0 {
+        if v.RequestRequired && getMem(req) <= 0 {
             return NewResponse(false, fmt.Sprintf("%s: memory requests not set", c.Name))
         }
 
-        if getMem(lim) <= 0 {
+        if v.LimitRequired && getMem(lim) <= 0 {
             return NewResponse(false, fmt.Sprintf("%s: memory limit not set", c.Name))
         }
 

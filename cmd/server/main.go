@@ -25,9 +25,9 @@ func main() {
     }
 
     val := validator.ValidatorConfig{}
-    val.Add(validator.CpuValidator{Max: "1000m"})
-    val.Add(validator.MemValidator{Guaranteed: true})
-    val.Add(validator.ReplicasValidator{Max: 3})
+    val.Add(validator.NewCpuValidator())
+    val.Add(validator.NewMemValidator())
+    val.Add(validator.NewReplicasValidator())
 
     httpServer := server.NewServer(*listenAddress, val)
 
