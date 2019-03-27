@@ -28,8 +28,13 @@ func (v CpuValidator) Validate(req *adm.AdmissionRequest) *adm.AdmissionResponse
 		return NewResponse(true, "ok")
 	}
 
-	maxCpu := parseCpu(v.Max)
 	containers := dep.Spec.Template.Spec.Containers
+
+	return v.validateCpu(containers)
+}
+
+func (v CpuValidator) validateCpu(containers []core.Container) *adm.AdmissionResponse {
+	maxCpu := parseCpu(v.Max)
 
 	var sumCpuReq int64 = 0
 	for _, c := range containers {
